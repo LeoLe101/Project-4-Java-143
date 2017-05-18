@@ -1,5 +1,6 @@
 package cs143;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -23,7 +24,7 @@ public class SortedDecimalMap<E extends DecimalSortable>
      * Constructor.
      *
      * @param digitCount the largest number of digits a sorting key will contain
-     * in this sorted decimal map
+     * in this sorted decimal map 
      */
     public SortedDecimalMap(int digitCount) {
         root = new DecimalNode();
@@ -38,7 +39,17 @@ public class SortedDecimalMap<E extends DecimalSortable>
      */
     @Override
     public boolean contains(int key) {
-
+        //Split the key to specific number according to the digit count
+        ArrayList<Integer> keyLayer = new ArrayList();
+        
+        //Check if the tree has the value with that specific key or not
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; i < keyLayer.size(); i++) {
+                if (root.children[i] == root.children[keyLayer.get(j)]) {
+                    
+                }
+            }
+        }
         return true;
     }
 
@@ -157,7 +168,7 @@ public class SortedDecimalMap<E extends DecimalSortable>
                     //check if that children Node has a leaf Node or not
                     if (node.children[i].value != null) {
                         //if the Node has a value, add it in the queue
-                        queue.add((E)node.children[i].value);
+                        queue.add((E) node.children[i].value);
                     } else {
                         //if not, restart the method using the current Node's childrenNode
                         fillQueue(node.children[i]);
