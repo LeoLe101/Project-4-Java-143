@@ -41,7 +41,10 @@ public class SortedDecimalMap<E extends DecimalSortable>
     public boolean contains(int key) {
         //Split the key to specific number according to the digit count
         ArrayList<Integer> keyLayer = new ArrayList();
-        
+        for (int i = 0; i < digitCount; i++) {
+            int number = (int)(key / Math.pow(10, digitCount - 1));
+            keyLayer.add(number);
+        }
         //Check if the tree has the value with that specific key or not
         for (int i = 0; i < 10; i++) {
             for (int j = 0; i < keyLayer.size(); i++) {
