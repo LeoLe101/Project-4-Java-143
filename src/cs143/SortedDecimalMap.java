@@ -4,6 +4,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * This is the concrete class that will create the Sorted Decimal Map by 
+ * implementing the Decimal Search Tree
+ * 
+ * @author Phuc Hong Le
+ * @version 5/17/2017
+ * @param <E> generic type that will decided the object within the tree
+ */
 public class SortedDecimalMap<E extends DecimalSortable>
         implements DecimalSearchTree<E> {
 
@@ -22,24 +30,49 @@ public class SortedDecimalMap<E extends DecimalSortable>
         this.digitCount = digitCount;
     }
 
+    /**
+     * Check if the tree contains the value by its key number
+     * 
+     * @param key the key number attached with the value inside of the tree
+     * @return true if a value with given key exists, false if it is not 
+     */
     @Override
     public boolean contains(int key) {
-        // TODO -- write this code
+        
         return true;
     }
 
+    /**
+     * Get the value with the given key number 
+     * 
+     * @param key the key number attached with the value inside of the tree
+     * @return the value of its given key, null if the value does not exist
+     */
     @Override
     public E get(int key) {
         // TODO -- write this code
         return null;
     }
 
+    /**
+     * Insert the value which has a unique non-negative whole-number key 
+     * to the tree
+     * 
+     * @param e the value to be inserted
+     * @return true if the value has been inserted, false if is not
+     */ 
     @Override
     public boolean insert(E e) {
         // TODO -- write this code
         return true;
     }
 
+    /**
+     * Remove the value with the given key from the tree
+     * 
+     * @param key the key number attached with the value inside of the tree
+     * @return true if the value is found and removed, false if it is not
+     */
     @Override
     public boolean remove(int key) {
         // TODO -- write this code

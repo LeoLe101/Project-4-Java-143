@@ -64,7 +64,7 @@ public class Product implements DecimalSortable {
      * Provides access to the product name.
      * 
      * @return the product name 
-     */
+     */ 
     public String getProductName() {
         return productName;
     }

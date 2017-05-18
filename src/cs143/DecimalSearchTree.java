@@ -45,9 +45,9 @@ public interface DecimalSearchTree<E> extends Iterable<E> {
     public boolean remove(int key);
 
     /**
-     * Check if the tree is empty or not
+     * Reports if the tree is empty or not.
      * 
-     * @return true if all values are null, false if it is not 
+     * @return true if the tree is empty, false if not 
      */
     public boolean isEmpty();
     
