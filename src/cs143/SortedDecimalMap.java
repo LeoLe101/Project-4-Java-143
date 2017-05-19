@@ -24,7 +24,7 @@ public class SortedDecimalMap<E extends DecimalSortable>
      * Constructor.
      *
      * @param digitCount the largest number of digits a sorting key will contain
-     * in this sorted decimal map 
+     * in this sorted decimal map
      */
     public SortedDecimalMap(int digitCount) {
         root = new DecimalNode();
@@ -40,16 +40,29 @@ public class SortedDecimalMap<E extends DecimalSortable>
     @Override
     public boolean contains(int key) {
         //Split the key to specific number according to the digit count
-        ArrayList<Integer> keyLayer = new ArrayList();
-        for (int i = 0; i < digitCount; i++) {
-            int number = (int)(key / Math.pow(10, digitCount - 1));
-            keyLayer.add(number);
+        ArrayList<Integer> keyLayer = new ArrayList<>();
+        int length = String.valueOf(key).length();
+        //separate the digit in the key number into different layer
+        while (key > 0) {
+            int digit = key % 10;
+            keyLayer.add(0, digit);
+            key /= 10;
         }
+        //adding the missing digit according to the digitCount
+        if (length < digitCount) {
+            int frontNumber = digitCount - length;
+            for (int i = 0; i < frontNumber; i++) {
+                keyLayer.add(0, 0);
+            }
+        }
+        
         //Check if the tree has the value with that specific key or not
         for (int i = 0; i < 10; i++) {
             for (int j = 0; i < keyLayer.size(); i++) {
                 if (root.children[i] == root.children[keyLayer.get(j)]) {
-                    
+                    if (root.children[i].value != null) {
+
+                    }
                 }
             }
         }
