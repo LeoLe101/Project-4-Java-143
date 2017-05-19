@@ -55,18 +55,18 @@ public class SortedDecimalMap<E extends DecimalSortable>
                 keyLayer.add(0, 0);
             }
         }
-        
+        DecimalNode temp = root;
         //Check if the tree has the value with that specific key or not
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; i < keyLayer.size(); i++) {
-                if (root.children[i] == root.children[keyLayer.get(j)]) {
-                    if (root.children[i].value != null) {
-
+        for (int j = 0; j < keyLayer.size(); j++) {
+            for (int i = 0; i < 10; i++) {
+                if (i == j) {
+                    if (root.children[i].value == temp.children[keyLayer.get(j)].value) {
+                        return true;
                     }
                 }
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -77,8 +77,9 @@ public class SortedDecimalMap<E extends DecimalSortable>
      */
     @Override
     public E get(int key) {
-        // TODO -- write this code
-        return null;
+        DecimalNode keyNode = new DecimalNode();
+        E value = (E) keyNode.children[3].value;
+        return value;
     }
 
     /**
