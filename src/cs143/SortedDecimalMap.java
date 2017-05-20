@@ -55,15 +55,16 @@ public class SortedDecimalMap<E extends DecimalSortable>
                 keyLayer.add(0, 0);
             }
         }
-        DecimalNode temp = root;
         //Check if the tree has the value with that specific key or not
-        for (int j = 0; j < keyLayer.size(); j++) {
-            for (int i = 0; i < 10; i++) {
-                if (i == j) {
-                    if (root.children[i].value == temp.children[keyLayer.get(j)].value) {
-                        return true;
-                    }
-                }
+        DecimalNode temp = root;
+        for (int i = 0; i < digitCount; i++) {
+            int layer = keyLayer.get(i);
+            if (temp.children[layer] != null) {
+                temp = temp.children[layer];
+            } else if (temp.children[layer].value != null) {
+                return true;
+            } else {
+                return false;
             }
         }
         return false;
@@ -77,9 +78,35 @@ public class SortedDecimalMap<E extends DecimalSortable>
      */
     @Override
     public E get(int key) {
-        DecimalNode keyNode = new DecimalNode();
-        E value = (E) keyNode.children[3].value;
-        return value;
+        //Split the key to specific number according to the digit count
+        ArrayList<Integer> keyLayer = new ArrayList<>();
+        int length = String.valueOf(key).length();
+        //separate the digit in the key number into different layer
+        while (key > 0) {
+            int digit = key % 10;
+            keyLayer.add(0, digit);
+            key /= 10;
+        }
+        //adding the missing digit according to the digitCount
+        if (length < digitCount) {
+            int frontNumber = digitCount - length;
+            for (int i = 0; i < frontNumber; i++) {
+                keyLayer.add(0, 0);
+            }
+        }
+        //move through the tree to find the value at that key
+        DecimalNode temp = root;
+        for (int i = 0; i < digitCount; i++) {
+            int layer = keyLayer.get(i);
+            if (temp.children[layer] != null) {
+                temp = temp.children[layer];
+            } else if (temp.children[layer].value != null) {
+                return (E) temp.children[layer].value;
+            } else {
+                return null;
+            }
+        }
+        return null;
     }
 
     /**
@@ -91,8 +118,38 @@ public class SortedDecimalMap<E extends DecimalSortable>
      */
     @Override
     public boolean insert(E e) {
-        // TODO -- write this code
-        return true;
+        //Split the key to specific number according to the digit count
+        int key = e.getKey();
+        ArrayList<Integer> keyLayer = new ArrayList<>();
+        int length = String.valueOf(key).length();
+        //separate the digit in the key number into different layer
+        while (key > 0) {
+            int digit = key % 10;
+            keyLayer.add(0, digit);
+            key /= 10;
+        }
+        //adding the missing digit according to the digitCount
+        if (length < digitCount) {
+            int frontNumber = digitCount - length;
+            for (int i = 0; i < frontNumber; i++) {
+                keyLayer.add(0, 0);
+            }
+        }
+        //move through the tree to find the value at that key
+        DecimalNode temp = root;
+        for (int i = 0; i < digitCount; i++) {
+            int layer = keyLayer.get(i);
+            if (temp.children[layer] != null) {
+                temp = temp.children[layer];
+            } else if (i < digitCount) {
+                temp.makeChild(layer);
+                temp = temp.children[layer];
+            } else {
+                temp.children[layer].value = e;
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -103,8 +160,36 @@ public class SortedDecimalMap<E extends DecimalSortable>
      */
     @Override
     public boolean remove(int key) {
-        // TODO -- write this code
-        return true;
+        //Split the key to specific number according to the digit count
+        ArrayList<Integer> keyLayer = new ArrayList<>();
+        int length = String.valueOf(key).length();
+        //separate the digit in the key number into different layer
+        while (key > 0) {
+            int digit = key % 10;
+            keyLayer.add(0, digit);
+            key /= 10;
+        }
+        //adding the missing digit according to the digitCount
+        if (length < digitCount) {
+            int frontNumber = digitCount - length;
+            for (int i = 0; i < frontNumber; i++) {
+                keyLayer.add(0, 0);
+            }
+        }
+        //move through the tree to find the value at that key
+        DecimalNode temp = root;
+        for (int i = 0; i < digitCount; i++) {
+            int layer = keyLayer.get(i);
+            if (temp.children[layer] != null) {
+                temp = temp.children[layer];
+            } else if (temp.children[layer].value != null) {
+                temp.children[layer] = null;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     /**
