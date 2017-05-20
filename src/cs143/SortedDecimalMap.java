@@ -138,15 +138,18 @@ public class SortedDecimalMap<E extends DecimalSortable>
         //move through the tree to find the value at that key
         DecimalNode temp = root;
         for (int i = 0; i < digitCount; i++) {
-            int layer = keyLayer.get(i);
-            if (temp.children[layer] != null) {
-                temp = temp.children[layer];
-            } else if (i < digitCount) {
-                temp.makeChild(layer);
-                temp = temp.children[layer];
-            } else {
-                temp.children[layer].value = e;
+            int index = keyLayer.get(i);
+            if (temp.children[index] == null) {
+                temp.makeChild(index);
+            }
+            if (i == digitCount - 1) {
+                if (temp.children[index].value != null) {
+                    return false;
+                }
+                temp.children[index].value = e;
                 return true;
+            } else {
+                temp = temp.children[index];
             }
         }
         return false;
