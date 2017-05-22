@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SortedDecimalMap.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;Project4&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">cs143</a> &gt; <span class="el_source">SortedDecimalMap.java</span></div><h1>SortedDecimalMap.java</h1><pre class="source lang-java linenums">package cs143;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+
+/**
+ * This is the concrete class that will create the Sorted Decimal Map by
+ * implementing the Decimal Search Tree
+ *
+ * @author Phuc Hong Le
+ * @version 5/17/2017
+ * @param &lt;E&gt; generic type that will decided the object within the tree
+ */
+public class SortedDecimalMap&lt;E extends DecimalSortable&gt;
+        implements DecimalSearchTree&lt;E&gt; {
+
+    //private fields
+    private DecimalNode root;
+    private int digitCount;
+
+    /**
+     * Constructor.
+     *
+     * @param digitCount the largest number of digits a sorting key will contain
+     * in this sorted decimal map
+     */
+<span class="fc" id="L29">    public SortedDecimalMap(int digitCount) {</span>
+<span class="fc" id="L30">        root = new DecimalNode();</span>
+<span class="fc" id="L31">        this.digitCount = digitCount;</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Check if the tree contains the value by its key number
+     *
+     * @param key the key number attached with the value inside of the tree
+     * @return true if a value with given key exists, false if it is not
+     */
+    @Override
+    public boolean contains(int key) {
+        //Split the key to specific number according to the digit count
+<span class="fc" id="L43">        ArrayList&lt;Integer&gt; keyLayer = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L44">        int length = String.valueOf(key).length();</span>
+        //separate the digit in the key number into different layer
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        while (key &gt; 0) {</span>
+<span class="fc" id="L47">            int digit = key % 10;</span>
+<span class="fc" id="L48">            keyLayer.add(0, digit);</span>
+<span class="fc" id="L49">            key /= 10;</span>
+<span class="fc" id="L50">        }</span>
+        //adding the missing digit according to the digitCount
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        if (length &lt; digitCount) {</span>
+<span class="nc" id="L53">            int frontNumber = digitCount - length;</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">            for (int i = 0; i &lt; frontNumber; i++) {</span>
+<span class="nc" id="L55">                keyLayer.add(0, 0);</span>
+            }
+        }
+        //Check if the tree has the value with that specific key or not
+<span class="fc" id="L59">        DecimalNode temp = root;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (int i = 0; i &lt; digitCount; i++) {</span>
+<span class="fc" id="L61">            int layer = keyLayer.get(i);</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">            if (temp.children[layer] != null) {</span>
+<span class="fc" id="L63">                temp = temp.children[layer];</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">            } else if (temp.children[layer].value != null) {</span>
+<span class="nc" id="L65">                return true;</span>
+            } else {
+<span class="nc" id="L67">                return false;</span>
+            }
+        }
+<span class="fc" id="L70">        return false;</span>
+    }
+
+    /**
+     * Get the value with the given key number
+     *
+     * @param key the key number attached with the value inside of the tree
+     * @return the value of its given key, null if the value does not exist
+     */
+    @Override
+    public E get(int key) {
+        //Split the key to specific number according to the digit count
+<span class="fc" id="L82">        ArrayList&lt;Integer&gt; keyLayer = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L83">        int length = String.valueOf(key).length();</span>
+        //separate the digit in the key number into different layer
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        while (key &gt; 0) {</span>
+<span class="fc" id="L86">            int digit = key % 10;</span>
+<span class="fc" id="L87">            keyLayer.add(0, digit);</span>
+<span class="fc" id="L88">            key /= 10;</span>
+<span class="fc" id="L89">        }</span>
+        //adding the missing digit according to the digitCount
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (length &lt; digitCount) {</span>
+<span class="nc" id="L92">            int frontNumber = digitCount - length;</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            for (int i = 0; i &lt; frontNumber; i++) {</span>
+<span class="nc" id="L94">                keyLayer.add(0, 0);</span>
+            }
+        }
+        //move through the tree to find the value at that key
+<span class="fc" id="L98">        DecimalNode temp = root;</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        for (int i = 0; i &lt; digitCount; i++) {</span>
+<span class="fc" id="L100">            int layer = keyLayer.get(i);</span>
+<span class="pc bpc" id="L101" title="1 of 2 branches missed.">            if (temp.children[layer] != null) {</span>
+<span class="fc" id="L102">                temp = temp.children[layer];</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">            } else if (temp.children[layer].value != null) {</span>
+<span class="nc" id="L104">                return (E) temp.children[layer].value;</span>
+            } else {
+<span class="nc" id="L106">                return null;</span>
+            }
+        }
+<span class="fc" id="L109">        return null;</span>
+    }
+
+    /**
+     * Insert the value which has a unique non-negative whole-number key to the
+     * tree
+     *
+     * @param e the value to be inserted
+     * @return true if the value has been inserted, false if is not
+     */
+    @Override
+    public boolean insert(E e) {
+        //Split the key to specific number according to the digit count
+<span class="fc" id="L122">        int key = e.getKey();</span>
+<span class="fc" id="L123">        ArrayList&lt;Integer&gt; keyLayer = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L124">        int length = String.valueOf(key).length();</span>
+        //separate the digit in the key number into different layer
+<span class="fc bfc" id="L126" title="All 2 branches covered.">        while (key &gt; 0) {</span>
+<span class="fc" id="L127">            int digit = key % 10;</span>
+<span class="fc" id="L128">            keyLayer.add(0, digit);</span>
+<span class="fc" id="L129">            key /= 10;</span>
+<span class="fc" id="L130">        }</span>
+        //adding the missing digit according to the digitCount
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">        if (length &lt; digitCount) {</span>
+<span class="nc" id="L133">            int frontNumber = digitCount - length;</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">            for (int i = 0; i &lt; frontNumber; i++) {</span>
+<span class="nc" id="L135">                keyLayer.add(0, 0);</span>
+            }
+        }
+        //move through the tree to find the value at that key
+<span class="fc" id="L139">        DecimalNode temp = root;</span>
+<span class="pc bpc" id="L140" title="1 of 2 branches missed.">        for (int i = 0; i &lt; digitCount; i++) {</span>
+<span class="fc" id="L141">            int index = keyLayer.get(i);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">            if (temp.children[index] == null) {</span>
+<span class="fc" id="L143">                temp.makeChild(index);</span>
+            }
+<span class="fc bfc" id="L145" title="All 2 branches covered.">            if (i == digitCount - 1) {</span>
+<span class="pc bpc" id="L146" title="1 of 2 branches missed.">                if (temp.children[index].value != null) {</span>
+<span class="nc" id="L147">                    return false;</span>
+                }
+<span class="fc" id="L149">                temp.children[index].value = e;</span>
+<span class="fc" id="L150">                return true;</span>
+            } else {
+<span class="fc" id="L152">                temp = temp.children[index];</span>
+            }
+        }
+<span class="nc" id="L155">        return false;</span>
+    }
+
+    /**
+     * Remove the value with the given key from the tree
+     *
+     * @param key the key number attached with the value inside of the tree
+     * @return true if the value is found and removed, false if it is not
+     */
+    @Override
+    public boolean remove(int key) {
+        //Split the key to specific number according to the digit count
+<span class="fc" id="L167">        ArrayList&lt;Integer&gt; keyLayer = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L168">        int length = String.valueOf(key).length();</span>
+        //separate the digit in the key number into different layer
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        while (key &gt; 0) {</span>
+<span class="fc" id="L171">            int digit = key % 10;</span>
+<span class="fc" id="L172">            keyLayer.add(0, digit);</span>
+<span class="fc" id="L173">            key /= 10;</span>
+<span class="fc" id="L174">        }</span>
+        //adding the missing digit according to the digitCount
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">        if (length &lt; digitCount) {</span>
+<span class="nc" id="L177">            int frontNumber = digitCount - length;</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">            for (int i = 0; i &lt; frontNumber; i++) {</span>
+<span class="nc" id="L179">                keyLayer.add(0, 0);</span>
+            }
+        }
+        //move through the tree to find the value at that key
+<span class="fc" id="L183">        DecimalNode temp = root;</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">        for (int i = 0; i &lt; digitCount; i++) {</span>
+<span class="fc" id="L185">            int layer = keyLayer.get(i);</span>
+<span class="pc bpc" id="L186" title="1 of 2 branches missed.">            if (temp.children[layer] != null) {</span>
+<span class="fc" id="L187">                temp = temp.children[layer];</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">            } else if (temp.children[layer].value != null) {</span>
+<span class="nc" id="L189">                temp.children[layer] = null;</span>
+<span class="nc" id="L190">                return true;</span>
+            } else {
+<span class="nc" id="L192">                return false;</span>
+            }
+        }
+<span class="fc" id="L195">        return false;</span>
+    }
+
+    /**
+     * Reports if the tree is empty or not.
+     *
+     * @return true if the tree is empty, false if not
+     */
+    @Override
+    public boolean isEmpty() {
+<span class="fc" id="L205">        return isEmpty(root);</span>
+    }
+
+    /**
+     * Private recursive method to determine if the tree is empty.
+     *
+     * @param node the current node the recursion is on
+     * @return false if a value is found in the tree, true if recursion is
+     * complete and no values were found
+     */
+    private boolean isEmpty(DecimalNode node) {
+<span class="fc bfc" id="L216" title="All 2 branches covered.">        for (int i = 0; i &lt; 10; i++) {</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">            if (node.children[i] != null) { //Check if the current node have any children node in the children[] or not</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">                if (node.children[i].value != null) { //Check if the current node have any value or not</span>
+<span class="nc" id="L219">                    return false;</span>
+                } else {
+<span class="nc" id="L221">                    return isEmpty(node.children[i]); //recursively do the method again with the children node of the current node</span>
+                }
+            }
+        }
+<span class="fc" id="L225">        return true;</span>
+    }
+
+    /**
+     * Provides access to a type-specific iterator.
+     *
+     * @return a new iterator object
+     */
+    @Override
+    public Iterator&lt;E&gt; iterator() {
+<span class="nc" id="L235">        return new DecimalIterator();</span>
+    }
+
+    /**
+     * An inner class that defines a type-specific iterator. Uses a queue
+     * internally to manage iterating through the tree.
+     */
+    private class DecimalIterator implements Iterator&lt;E&gt; {
+
+        //private fields
+        private Queue&lt;E&gt; queue;
+        private E lastRemoved;
+
+        /**
+         * Default constructor.
+         */
+<span class="nc" id="L251">        public DecimalIterator() {</span>
+<span class="nc" id="L252">            fillQueue();</span>
+<span class="nc" id="L253">        }</span>
+
+        /**
+         * A private method used to fill the queue.
+         */
+        private void fillQueue() {
+<span class="nc" id="L259">            queue = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L260">            fillQueue(root);</span>
+<span class="nc" id="L261">        }</span>
+
+        /**
+         * A private recursive method to fill the queue with the value of each
+         * node in sorted order.
+         *
+         * @param node the current node in the recursive process
+         */
+        private void fillQueue(DecimalNode node) {
+<span class="nc bnc" id="L270" title="All 2 branches missed.">            for (int i = 0; i &lt; 10; i++) {</span>
+                //check if the children of the current Node is null or not
+<span class="nc bnc" id="L272" title="All 2 branches missed.">                if (node.children[i] != null) {</span>
+                    //check if that children Node has a leaf Node or not
+<span class="nc bnc" id="L274" title="All 2 branches missed.">                    if (node.children[i].value != null) {</span>
+                        //if the Node has a value, add it in the queue
+<span class="nc" id="L276">                        queue.add((E) node.children[i].value);</span>
+                    } else {
+                        //if not, restart the method using the current Node's childrenNode
+<span class="nc" id="L279">                        fillQueue(node.children[i]);</span>
+                    }
+                }
+            }
+<span class="nc" id="L283">        }</span>
+
+        /**
+         * Determines if there is a next value in the map.
+         *
+         * @return true if there is a next value, false if not
+         */
+        @Override
+        public boolean hasNext() {
+<span class="nc bnc" id="L292" title="All 2 branches missed.">            if (queue.isEmpty()) {</span>
+<span class="nc" id="L293">                return false;</span>
+            }
+<span class="nc" id="L295">            return true;</span>
+        }
+
+        /**
+         * Provides access to the next value in the map, in sorted order.
+         *
+         * @return the next value
+         */
+        @Override
+        public E next() {
+<span class="nc" id="L305">            lastRemoved = queue.poll();</span>
+<span class="nc" id="L306">            return lastRemoved;</span>
+        }
+
+        /**
+         * Removes the last reported value from the map.
+         */
+        @Override
+        public void remove() {
+<span class="nc" id="L314">            SortedDecimalMap.this.remove(lastRemoved.getKey());</span>
+<span class="nc" id="L315">        }</span>
+    }
+
+    /**
+     * An inner class that defines the decimal tree node.
+     */
+    private class DecimalNode&lt;E&gt; {
+
+        /**
+         * the value stored in this node - will be null for all nodes except the
+         * lowest-level leaf nodes
+         */
+        public E value;
+
+        /**
+         * the array used to store the children of this node
+         */
+        public DecimalNode[] children;
+
+        /**
+         * Default constructor.
+         */
+<span class="fc" id="L337">        public DecimalNode() {</span>
+<span class="fc" id="L338">            children = new DecimalNode[10];</span>
+<span class="fc" id="L339">        }</span>
+
+        /**
+         * A convenience method to create a new node at the given index of the
+         * current node.
+         *
+         * @param index the index of the children array where the new node
+         * should be stored
+         */
+        public void makeChild(int index) {
+<span class="fc" id="L349">            children[index] = new DecimalNode();</span>
+<span class="fc" id="L350">        }</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
